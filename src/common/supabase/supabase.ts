@@ -19,8 +19,6 @@ export class Supabase {
 
     this.logger.log('initialising new supabase client for new Scope.REQUEST');
 
-    console.log(getEnv().supabase.baseUrl);
-
     this.clientInstance = createClient(
       getEnv().supabase.baseUrl,
       getEnv().supabase.token,

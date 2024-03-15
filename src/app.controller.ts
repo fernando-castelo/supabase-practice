@@ -1,5 +1,13 @@
-import { Controller, Get, Logger } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  Logger,
+  Post,
+} from '@nestjs/common';
 import { AppService } from './app.service';
+import { CreateUserDto } from './interface/CreateUserDto';
 
 @Controller()
 export class AppController {
@@ -10,5 +18,14 @@ export class AppController {
   getHello() {
     this.logger.log('GET / called');
     return this.appService.getHello();
+  }
+
+  @Post()
+  async createUser(@Body() createUserDto: CreateUserDto) {
+    try {
+      return await this.appService.createUser(createUserDto);
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
   }
 }
