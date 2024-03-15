@@ -14,16 +14,19 @@ export class AppController {
   private readonly logger = new Logger(AppController.name);
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  getHello() {
-    this.logger.log('GET / called');
-    return this.appService.getHello();
-  }
-
   @Post()
   async createUser(@Body() createUserDto: CreateUserDto) {
     try {
       return await this.appService.createUser(createUserDto);
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
+  @Get()
+  async getUsers() {
+    try {
+      return await this.appService.getUsers();
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }

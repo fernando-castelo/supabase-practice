@@ -35,4 +35,16 @@ export class AppService {
 
     return data;
   }
+
+  async getUsers() {
+    const { data, error } = await this.supabase
+      .getClient()
+      .from('user')
+      .select();
+    if (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+
+    return data;
+  }
 }
