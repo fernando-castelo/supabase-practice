@@ -5,9 +5,11 @@ import {
   HttpException,
   Logger,
   Post,
+  Res,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { CreateUserDto } from './interface/CreateUserDto';
+import { Request } from 'express';
 
 @Controller()
 export class AppController {
@@ -15,9 +17,12 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Post()
-  async createUser(@Body() createUserDto: CreateUserDto) {
+  async createUser(
+    @Res() request: Request,
+    @Body() createUserDto: CreateUserDto,
+  ) {
     try {
-      return await this.appService.createUser(createUserDto);
+      return await this.appService.createUser(request, createUserDto);
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }
