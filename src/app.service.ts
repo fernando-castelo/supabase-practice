@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Req } from '@nestjs/common';
 import { Supabase } from './common/supabase';
 import { CreateUserDto } from './interface/CreateUserDto';
 import { Request } from 'express';
@@ -12,20 +12,11 @@ export class AppService {
   ) {}
 
   async createUser(request: Request, user: CreateUserDto) {
-    const storedUserData = JSON.parse(
-      await this.authenticationService.getUser(request),
-    );
+    const access_token = this.authenticationService.getAcessToken(request);
 
-    console.log(storedUserData);
-
-    const userId = storedUserData?.id;
-
-    user['user_id'] = userId;
-
-    console.log(user);
-
+    console.log(access_token);
     const { data, error } = await this.supabase
-      .getClient()
+      .getClient(access_token)
       .from('user')
       .insert(user);
     if (error) {
@@ -35,9 +26,17 @@ export class AppService {
     return data;
   }
 
-  async getUsers() {
+  async getUsers(@Req() request: Request) {
+    console.log('estou aquuiiii');
+
+    const storedUserData = JSON.parse(
+      await this.authenticationService.getUser(request),
+    );
+
+    const accessToken = storedUserData?.access_token;
+
     const { data, error } = await this.supabase
-      .getClient()
+      .getClient(accessToken)
       .from('user')
       .select();
     if (error) {

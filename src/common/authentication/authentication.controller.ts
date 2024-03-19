@@ -26,19 +26,24 @@ export class AuthenticationController {
   @Post('/login')
   async signInUser(
     @Res({ passthrough: true }) response: Response,
+    @Req() request: Request,
     @Body() login: LoginDto,
   ) {
     try {
-      return await this.authenticationService.signInWithEmail(response, login);
+      return await this.authenticationService.signInWithEmail(
+        request,
+        response,
+        login,
+      );
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }
   }
 
   @Get()
-  async signOut() {
+  async signOut(@Req() request: Request) {
     try {
-      return await this.authenticationService.signOut();
+      return await this.authenticationService.signOut(request);
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }

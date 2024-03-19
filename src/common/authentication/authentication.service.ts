@@ -12,7 +12,7 @@ export class AuthenticationService {
   ) {}
 
   async signUpNewUser(login: LoginDto) {
-    const { data, error } = await this.supabase.getClient().auth.signUp({
+    const { data, error } = await this.supabase.getClient(false).auth.signUp({
       email: login.email,
       password: login.password,
     });
@@ -24,9 +24,11 @@ export class AuthenticationService {
     return jwt;
   }
 
-  async signInWithEmail(response: Response, login: LoginDto) {
+  async signInWithEmail(request: Request, response: Response, login: LoginDto) {
+    const accessToken = this.getAcessToken(request);
+
     const { data, error } = await this.supabase
-      .getClient()
+      .getClient(accessToken)
       .auth.signInWithPassword({
         email: login.email,
         password: login.password,
@@ -49,20 +51,30 @@ export class AuthenticationService {
     };
   }
 
-  async getUser(@Req() request: Request) {
+  getUser(@Req() request: Request) {
     const cookie = request.cookies['user'];
 
     return cookie;
   }
 
-  async getSession(@Req() request: Request) {
+  getSession(@Req() request: Request) {
     const cookie = request.cookies['session'];
 
     return cookie;
   }
 
-  async signOut() {
-    const { error } = await this.supabase.getClient().auth.signOut();
+  getAcessToken(@Req() request: Request) {
+    const storedUserData = JSON.parse(this.getSession(request));
+
+    const accessToken = storedUserData?.access_token;
+
+    return accessToken;
+  }
+
+  async signOut(@Req() request: Request) {
+    const accessToken = this.getAcessToken(request);
+
+    const { error } = await this.supabase.getClient(accessToken).auth.signOut();
     if (error) {
       throw new InternalServerErrorException(error.message);
     }

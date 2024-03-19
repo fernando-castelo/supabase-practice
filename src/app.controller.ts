@@ -29,9 +29,9 @@ export class AppController {
   }
 
   @Get()
-  async getUsers() {
+  async getUsers(@Req() request: Request) {
     try {
-      return await this.appService.getUsers();
+      return await this.appService.getUsers(request);
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }
