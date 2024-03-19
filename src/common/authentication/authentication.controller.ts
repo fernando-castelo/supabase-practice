@@ -56,7 +56,7 @@ export class AuthenticationController {
   @Get('/session')
   async getSession(@Req() request: Request) {
     try {
-      return await this.authenticationService.getSesssion(request);
+      return await this.authenticationService.getSession(request);
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }

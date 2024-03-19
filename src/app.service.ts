@@ -1,22 +1,28 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { Supabase } from './common/supabase';
 import { CreateUserDto } from './interface/CreateUserDto';
-import * as bcrypt from 'bcrypt';
 import { Request } from 'express';
+import { AuthenticationService } from './common/authentication';
 
 @Injectable()
 export class AppService {
-  constructor(private readonly supabase: Supabase) {}
+  constructor(
+    private readonly supabase: Supabase,
+    private readonly authenticationService: AuthenticationService,
+  ) {}
 
   async createUser(request: Request, user: CreateUserDto) {
-    const hash = await bcrypt.hash(user.password, 10);
-    user['password'] = hash;
+    const storedUserData = JSON.parse(
+      await this.authenticationService.getUser(request),
+    );
 
-    const storedUserData = request.cookies['user'];
-    const storedSessionData = request.cookies['session'];
-
-    console.log(storedSessionData);
     console.log(storedUserData);
+
+    const userId = storedUserData?.id;
+
+    user['user_id'] = userId;
+
+    console.log(user);
 
     const { data, error } = await this.supabase
       .getClient()

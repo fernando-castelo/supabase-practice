@@ -35,8 +35,6 @@ export class AuthenticationService {
       throw new InternalServerErrorException(error.message);
     }
 
-    console.log(data?.user);
-
     try {
       response.cookie('user', JSON.stringify(data?.user), { httpOnly: true });
       response.cookie('session', JSON.stringify(data?.session), {
@@ -57,7 +55,7 @@ export class AuthenticationService {
     return cookie;
   }
 
-  async getSesssion(@Req() request: Request) {
+  async getSession(@Req() request: Request) {
     const cookie = request.cookies['session'];
 
     return cookie;
