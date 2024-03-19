@@ -41,9 +41,9 @@ export class AuthenticationController {
   }
 
   @Get()
-  async signOut(@Req() request: Request) {
+  async signOut(@Req() request: Request, @Res() response: Response) {
     try {
-      return await this.authenticationService.signOut(request);
+      return await this.authenticationService.signOut(request, response);
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }

@@ -51,32 +51,40 @@ export class AuthenticationService {
     };
   }
 
-  getUser(@Req() request: Request) {
+  async getUser(@Req() request: Request) {
+    console.log('getUser');
     const cookie = request.cookies['user'];
 
     return cookie;
   }
 
-  getSession(@Req() request: Request) {
+  async getSession(@Req() request: Request) {
+    console.log('getSession');
     const cookie = request.cookies['session'];
 
     return cookie;
   }
 
-  getAcessToken(@Req() request: Request) {
-    const storedUserData = JSON.parse(this.getSession(request));
+  async getAcessToken(@Req() request: Request) {
+    const storedUserData = await this.getSession(request);
 
     const accessToken = storedUserData?.access_token;
 
     return accessToken;
   }
 
-  async signOut(@Req() request: Request) {
+  async signOut(request: Request, response: Response) {
+    console.log('signOut');
     const accessToken = this.getAcessToken(request);
 
     const { error } = await this.supabase.getClient(accessToken).auth.signOut();
     if (error) {
       throw new InternalServerErrorException(error.message);
     }
+
+    response.clearCookie('session');
+    response.clearCookie('user');
+
+    return response.json({ message: 'success' });
   }
 }
