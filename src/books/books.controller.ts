@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   Logger,
@@ -52,6 +53,15 @@ export class BooksController {
         bookId,
         updateBookDto,
       );
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
+  @Delete(':id')
+  async deleteBookById(@Req() request: Request, @Param('id') bookId: number) {
+    try {
+      return await this.bookService.deleteBookById(request, bookId);
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }

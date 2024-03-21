@@ -59,6 +59,7 @@ export class AuthenticationService {
 
   getSession(@Req() request: Request) {
     const cookie = request.cookies['session'];
+    console.log(cookie);
 
     return cookie;
   }

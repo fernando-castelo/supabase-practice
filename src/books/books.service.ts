@@ -60,4 +60,18 @@ export class BooksService {
       throw new InternalServerErrorException(error.message);
     }
   }
+
+  async deleteBookById(request: Request, bookId: number) {
+    const access_token =
+      await this.authenticationService.getAccessToken(request);
+
+    const { error } = await this.supabase
+      .getClient(access_token)
+      .from('books')
+      .delete()
+      .eq('id', bookId);
+    if (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
 }
