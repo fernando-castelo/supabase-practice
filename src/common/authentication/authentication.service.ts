@@ -25,7 +25,7 @@ export class AuthenticationService {
   }
 
   async signInWithEmail(request: Request, response: Response, login: LoginDto) {
-    const accessToken = this.getAcessToken(request);
+    const accessToken = this.getAccessToken(request);
 
     const { data, error } = await this.supabase
       .getClient(accessToken)
@@ -51,31 +51,48 @@ export class AuthenticationService {
     };
   }
 
-  async getUser(@Req() request: Request) {
+  getUser(@Req() request: Request) {
     console.log('getUser');
     const cookie = request.cookies['user'];
 
     return cookie;
   }
 
-  async getSession(@Req() request: Request) {
+  getSession(@Req() request: Request) {
     console.log('getSession');
     const cookie = request.cookies['session'];
 
     return cookie;
   }
 
-  async getAcessToken(@Req() request: Request) {
-    const storedUserData = await this.getSession(request);
+  async getAccessToken(@Req() request: Request) {
+    try {
+      const storedUserData = await JSON.parse(this.getSession(request));
 
-    const accessToken = storedUserData?.access_token;
+      console.log(storedUserData);
+      if (!storedUserData) {
+        console.log('Session data is undefined');
+        return undefined;
+      }
 
-    return accessToken;
+      const accessToken = storedUserData.access_token;
+
+      if (!accessToken) {
+        console.log('Access token is not found in session data');
+        return undefined;
+      }
+
+      console.log(`Access token: ${accessToken}`);
+      return accessToken;
+    } catch (error) {
+      console.error('Error getting access token:', error);
+      return undefined;
+    }
   }
 
   async signOut(request: Request, response: Response) {
     console.log('signOut');
-    const accessToken = this.getAcessToken(request);
+    const accessToken = await this.getAccessToken(request);
 
     const { error } = await this.supabase.getClient(accessToken).auth.signOut();
     if (error) {
