@@ -14,7 +14,6 @@ export class AppService {
   async createUser(request: Request, user: CreateUserDto) {
     const access_token = this.authenticationService.getAcessToken(request);
 
-    console.log(access_token);
     const { data, error } = await this.supabase
       .getClient(access_token)
       .from('user')
@@ -27,8 +26,6 @@ export class AppService {
   }
 
   async getUsers(@Req() request: Request) {
-    console.log('estou aquuiiii');
-
     const storedUserData = JSON.parse(
       await this.authenticationService.getUser(request),
     );

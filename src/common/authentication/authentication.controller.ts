@@ -30,6 +30,7 @@ export class AuthenticationController {
     @Body() login: LoginDto,
   ) {
     try {
+      console.log('LOGIN FUTTER FLOW');
       return await this.authenticationService.signInWithEmail(
         request,
         response,
