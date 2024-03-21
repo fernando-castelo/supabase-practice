@@ -12,7 +12,8 @@ export class AppService {
   ) {}
 
   async createUser(request: Request, user: CreateUserDto) {
-    const access_token = this.authenticationService.getAcessToken(request);
+    const access_token =
+      await this.authenticationService.getAccessToken(request);
 
     const { data, error } = await this.supabase
       .getClient(access_token)

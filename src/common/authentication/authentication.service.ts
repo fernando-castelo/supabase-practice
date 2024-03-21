@@ -52,14 +52,12 @@ export class AuthenticationService {
   }
 
   getUser(@Req() request: Request) {
-    console.log('getUser');
     const cookie = request.cookies['user'];
 
     return cookie;
   }
 
   getSession(@Req() request: Request) {
-    console.log('getSession');
     const cookie = request.cookies['session'];
 
     return cookie;
@@ -69,7 +67,6 @@ export class AuthenticationService {
     try {
       const storedUserData = await JSON.parse(this.getSession(request));
 
-      console.log(storedUserData);
       if (!storedUserData) {
         console.log('Session data is undefined');
         return undefined;
