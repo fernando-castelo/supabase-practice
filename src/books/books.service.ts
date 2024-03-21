@@ -3,6 +3,7 @@ import { AuthenticationService } from 'src/common/authentication';
 import { Supabase } from 'src/common/supabase';
 import { Request } from 'express';
 import { CreateBookDto } from './interface/CreateBookDto';
+import { UpdateBookDto } from './interface/UpdateBookDto';
 
 @Injectable()
 export class BooksService {
@@ -40,5 +41,23 @@ export class BooksService {
     }
 
     return data;
+  }
+
+  async updateBookById(
+    request: Request,
+    bookId: number,
+    updateBookDto: UpdateBookDto,
+  ) {
+    const access_token =
+      await this.authenticationService.getAccessToken(request);
+
+    const { error } = await this.supabase
+      .getClient(access_token)
+      .from('books')
+      .update(updateBookDto)
+      .eq('id', updateBookDto.id);
+    if (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   }
 }

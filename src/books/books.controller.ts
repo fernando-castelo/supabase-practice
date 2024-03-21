@@ -4,12 +4,15 @@ import {
   Get,
   HttpException,
   Logger,
+  Param,
   Post,
+  Put,
   Req,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './interface/CreateBookDto';
 import { Request } from 'express';
+import { UpdateBookDto } from './interface/UpdateBookDto';
 
 @Controller('/books')
 export class BooksController {
@@ -32,6 +35,23 @@ export class BooksController {
   async getBooksByUser(@Req() request: Request) {
     try {
       return await this.bookService.getBooksByUser(request);
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
+  @Put(':id')
+  async updateBookById(
+    @Param('id') bookId: number,
+    @Req() request: Request,
+    @Body() updateBookDto: UpdateBookDto,
+  ) {
+    try {
+      return await this.bookService.updateBookById(
+        request,
+        bookId,
+        updateBookDto,
+      );
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }
