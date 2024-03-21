@@ -26,4 +26,19 @@ export class BooksService {
 
     return data;
   }
+
+  async getBooksByUser(request: Request) {
+    const access_token =
+      await this.authenticationService.getAccessToken(request);
+
+    const { data, error } = await this.supabase
+      .getClient(access_token)
+      .from('books')
+      .select();
+    if (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+
+    return data;
+  }
 }

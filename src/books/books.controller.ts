@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpException,
   Logger,
   Post,
@@ -22,6 +23,15 @@ export class BooksController {
   ) {
     try {
       return await this.bookService.createBook(request, createBookDto);
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
+  @Get()
+  async getBooksByUser(@Req() request: Request) {
+    try {
+      return await this.bookService.getBooksByUser(request);
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }

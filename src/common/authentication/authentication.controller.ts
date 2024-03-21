@@ -30,7 +30,6 @@ export class AuthenticationController {
     @Body() login: LoginDto,
   ) {
     try {
-      console.log('LOGIN FUTTER FLOW');
       return await this.authenticationService.signInWithEmail(
         request,
         response,
@@ -41,7 +40,7 @@ export class AuthenticationController {
     }
   }
 
-  @Get()
+  @Get('/logout')
   async signOut(@Req() request: Request, @Res() response: Response) {
     try {
       return await this.authenticationService.signOut(request, response);

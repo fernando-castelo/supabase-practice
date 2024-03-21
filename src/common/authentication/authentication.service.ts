@@ -79,7 +79,6 @@ export class AuthenticationService {
         return undefined;
       }
 
-      console.log(`Access token: ${accessToken}`);
       return accessToken;
     } catch (error) {
       console.error('Error getting access token:', error);
